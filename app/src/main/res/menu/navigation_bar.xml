@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/settingsNavigationItem"
+        android:title="Settings"
+        android:icon="@drawable/settings" />
+
+    <item android:id="@+id/jobsNavigationItem"
+        android:title="My Jobs"
+        android:icon="@drawable/suitcase"
+        />
+
+    <item android:id="@+id/shiftsNavigationItem"
+        android:title="My Shifts"
+        android:icon="@drawable/clock" />
+
+    <item android:id="@+id/statusNavigationItem"
+        android:title="Status"
+        android:icon="@drawable/status" />
+</menu>
