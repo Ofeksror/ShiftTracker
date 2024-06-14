@@ -5,38 +5,40 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
     <TextView
         android:id="@+id/dateTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="18dp"
         android:fontFamily="@font/inter"
-        android:text="Date"
+        android:text="88/88, Wednesday"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <TextView
         android:id="@+id/hoursTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
+        android:layout_marginEnd="28dp"
         android:fontFamily="@font/inter"
-        android:text="Hours"
+        android:text="16.0 Hours"
+        android:textAlignment="viewStart"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/dateTV"
+        app:layout_constraintEnd_toStartOf="@+id/wageTV"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/wageTV"
-        android:layout_width="wrap_content"
+        android:layout_width="54dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
+        android:layout_marginEnd="28dp"
         android:fontFamily="@font/inter"
-        android:text="Wage"
+        android:text="250.0$"
+        android:textAlignment="viewStart"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/hoursTV"
+        app:layout_constraintEnd_toStartOf="@+id/btn_editShift"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -44,7 +46,7 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="12dp"
         android:backgroundTint="#EABD37"
         android:insetTop="0dp"
@@ -58,6 +60,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         tools:insetLeft="0dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

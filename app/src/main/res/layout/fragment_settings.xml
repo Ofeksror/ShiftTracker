@@ -10,20 +10,30 @@
         android:id="@+id/signOutButton"
         android:layout_width="180dp"
         android:layout_height="48dp"
-        android:layout_marginStart="112dp"
-        android:layout_marginTop="104dp"
+        android:layout_marginTop="576dp"
         android:text="Sign Out"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/imageViewPFP"
+        android:layout_width="189dp"
+        android:layout_height="165dp"
+        android:layout_marginTop="120dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
     <Button
-        android:id="@+id/userDetailsButton"
-        android:layout_width="180dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="32dp"
-        android:text="Log User Details"
-        app:layout_constraintEnd_toEndOf="@+id/signOutButton"
-        app:layout_constraintStart_toStartOf="@+id/signOutButton"
-        app:layout_constraintTop_toBottomOf="@+id/signOutButton" />
+        android:id="@+id/btnChangePFP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Choose Profile Picture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewPFP" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -49,7 +49,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         this.inputPassword = (EditText) findViewById(R.id.inputPassword);
         this.signInButton = (Button) findViewById(R.id.signInButton);
         this.signUpButton = (Button) findViewById(R.id.signUpButton);
-        this.signInGoogleButton = (Button) findViewById(R.id.signInGoogleButton);
 
         this.signInButton.setOnClickListener(this);
         this.signUpButton.setOnClickListener(this);

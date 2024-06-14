@@ -1,0 +1,71 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/tvJobTitleLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Job:"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="8dp"/>
+
+    <Spinner
+        android:id="@+id/spinnerJobs"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_below="@id/tvJobTitleLabel"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/tvHourlyFeeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hourly Fee:"
+        android:layout_below="@id/spinnerJobs"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/etHourlyFee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Hourly Fee"
+        android:inputType="numberDecimal"
+        android:layout_below="@id/tvHourlyFeeLabel"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/tvEndTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etHourlyFee"
+        android:layout_marginTop="24dp"
+        android:text="End Time: "/>
+
+    <TextView
+        android:id="@+id/tvFinalDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvEndTime"
+        android:layout_marginTop="16dp"
+        android:text="Shift Duration: "/>
+
+    <TextView
+        android:id="@+id/tvShiftWage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvFinalDuration"
+        android:layout_marginTop="24dp"
+        android:textSize="18dp"
+        android:text="Wage: "
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:id="@+id/btnCreateShift"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvShiftWage"
+        android:layout_marginTop="20dp"
+        android:text="Create Shift"/>
+</RelativeLayout>

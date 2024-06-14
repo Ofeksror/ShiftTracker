@@ -152,7 +152,7 @@ public class EditShiftActivity extends AppCompatActivity {
         float bonus = ((inputBonus.getText().toString().length() == 0) ? 0 : Float.parseFloat(inputBonus.getText().toString()));
         String notes = inputNotes.getText().toString();
 
-        float wage = FirebaseManager.calculateWage(startDateTime, endDateTime, hourlyFee, job.getExtraHoursAfter(), job.getExtraHoursRate());
+        float wage = FirebaseManager.calculateWage(startDateTime, endDateTime, hourlyFee, job.getExtraHoursAfter(), job.getExtraHoursRate(), bonus);
 
         if (editingExistingShift) {
             // Modifying an existing job

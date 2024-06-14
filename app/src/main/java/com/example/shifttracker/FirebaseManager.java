@@ -30,7 +30,6 @@ public class FirebaseManager {
     private FirebaseManager() {
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
-//        authUser = FirebaseAuth.getInstance().getCurrentUser();
         user = null;
     }
 
@@ -60,15 +59,15 @@ public class FirebaseManager {
         return (float) (Math.round(hours_duration * 2) / 2.0);
     }
 
-    public static float calculateWage(Date startTime, Date endTime, float hourlyFee, float extraHoursAfter, float extraHoursRate) {
+    public static float calculateWage(Date startTime, Date endTime, float hourlyFee, float extraHoursAfter, float extraHoursRate, float bonus) {
         float shiftDuration = getShiftDuration(startTime, endTime);
 
         if (shiftDuration <= extraHoursAfter) {
-            return hourlyFee * shiftDuration;
+            return (hourlyFee * shiftDuration) + bonus ;
         }
         else {
             float extraHours = shiftDuration - extraHoursAfter;
-            return hourlyFee * shiftDuration + hourlyFee * extraHoursRate * extraHours;
+            return hourlyFee * shiftDuration + hourlyFee * extraHoursRate * extraHours + bonus;
         }
     }
 
@@ -155,6 +154,19 @@ public class FirebaseManager {
         return errorMessage[0];
     }
 
+
+    public static Shift createNewShift(Date startTime, Date endTime, float hourlyFee, float bonus, String notes, String jobTitle) {
+        // get the job object
+        Job job = findJobByTitle(jobTitle);
+
+        // if hourlyFee is not set, set it to the job's hourlyFee
+        if (hourlyFee == 0) {
+            hourlyFee = job.getHourlyFee();
+        }
+
+        // create a new shift object
+        return new Shift(startTime, endTime, hourlyFee, bonus, notes, calculateWage(startTime, endTime, hourlyFee, job.getExtraHoursAfter(), job.getExtraHoursRate(), bonus));
+    }
 
     public static Job findJobByTitle(String jobTitle) {
         for (Job job : user.getJobs()) {

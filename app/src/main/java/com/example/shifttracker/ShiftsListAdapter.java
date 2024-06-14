@@ -67,8 +67,8 @@ public class ShiftsListAdapter extends RecyclerView.Adapter<ShiftsListAdapter.My
 
         holder.tv_date.setText(dateFormatter.format(currentShift.getStartTime()));
         float shiftDuration = FirebaseManager.getShiftDuration(currentShift.getStartTime(), currentShift.getEndTime());
-        holder.tv_hours.setText(String.valueOf(shiftDuration));
-        holder.tv_wage.setText(String.valueOf(currentShift.getWage()));
+        holder.tv_hours.setText(String.valueOf(shiftDuration) + " Hours");
+        holder.tv_wage.setText("$" + String.valueOf(currentShift.getWage()));
 
         holder.btn_edit.setOnClickListener(new View.OnClickListener() {
             @Override
