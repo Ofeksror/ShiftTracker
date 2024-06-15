@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.Firebase;
@@ -273,6 +274,8 @@ public class StatusFragment extends Fragment {
             float wage = FirebaseManager.calculateWage(startTime, endTime, hourlyFee, job.getExtraHoursAfter(), job.getExtraHoursRate(), bonus);
 
             FirebaseManager.addShiftToJob(new Shift(startTime, endTime, hourlyFee, bonus, notes, wage), job.getTitle());
+
+            Toast.makeText(getContext(), "Successfully Created Your Shift!", Toast.LENGTH_LONG).show();
 
             endShiftDialog.dismiss();
             bottomSheetDialog.dismiss();

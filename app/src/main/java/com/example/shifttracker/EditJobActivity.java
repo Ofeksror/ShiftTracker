@@ -8,25 +8,17 @@ import static com.example.shifttracker.FirebaseManager.updateRecyclerviewDataset
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
+import android.os.Environment;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.firestore.DocumentReference;
-
-import java.text.DecimalFormat;
+import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import data_models.Job;
 import data_models.Shift;
@@ -36,7 +28,8 @@ public class EditJobActivity extends AppCompatActivity {
     boolean editingExistingJob;
     Toolbar toolbar;
     EditText inputJobTitle, inputHourlyFee, inputExtraHoursAfter, inputExtraHoursRate;
-    Button buttonCreate;
+    Button buttonCreate, buttonDeleteJob;
+    String originalJobTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,17 +48,22 @@ public class EditJobActivity extends AppCompatActivity {
         inputExtraHoursRate = (EditText) findViewById(R.id.inputExtraHoursRate);
         buttonCreate = (Button) findViewById(R.id.buttonCreate);
 
+        buttonDeleteJob.setVisibility(View.GONE);
+
         Bundle intentData = getIntent().getExtras();
 
         if (editingExistingJob) {
             inputJobTitle.setText(intentData.getString("title"));
+            originalJobTitle = intentData.getString("title");
             inputHourlyFee.setText(intentData.getString("hourlyFee"));
             inputExtraHoursAfter.setText(intentData.getString("extraHoursAfter"));
             inputExtraHoursRate.setText(intentData.getString("extraHoursRate"));
 
             buttonCreate.setText("Update Job");
+            buttonDeleteJob.setVisibility(View.VISIBLE);
         }
 
+        buttonDeleteJob.setOnClickListener(v -> {showConfirmationDialog();});
 
         buttonCreate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,5 +140,30 @@ public class EditJobActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void showConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirm Action");
+        builder.setMessage("Are you sure you want to delete this job?\nAll shifts under this job will be deleted and cannot be restored.");
+
+        builder.setPositiveButton("Yes, Delete Job", (dialog, which) -> {
+            proceedDeleteJob();
+        });
+
+        builder.setNegativeButton("No, Keep this Job", (dialog, which) -> {
+            dialog.dismiss();
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void proceedDeleteJob() {
+        String results = FirebaseManager.deleteJob(originalJobTitle);
+        if (results.length() == 0) {
+            results = "Successfully Deleted Job " + originalJobTitle;
+        }
+        Toast.makeText(EditJobActivity.this, results, Toast.LENGTH_LONG).show();
     }
 }

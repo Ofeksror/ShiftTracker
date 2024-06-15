@@ -11,6 +11,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -177,6 +178,33 @@ public class FirebaseManager {
         return null;
     }
 
+    public static String deleteJob(String jobTitle) {
+        ArrayList<Job> jobs = (ArrayList<Job>) user.getJobs();
+
+        int i = 0;
+        for (Job job : jobs) {
+            if (jobTitle.equals(job.getTitle())) {
+                jobs.remove(i);
+                break;
+            }
+            i++;
+        }
+
+        user.setJobs(jobs);
+
+        // Upload updated data to FireStore
+        final String[] errorMessage = new String[] {""};
+        getUserRef().update("jobs", jobs)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Ofek", "Successfully Removed Job " + jobTitle);
+                })
+                .addOnFailureListener(e -> {
+                    Log.d("Ofek", "Failed to Remove Job");
+                    errorMessage[0] = "Failed to Remove Job, " + e;
+                });
+
+        return errorMessage[0];
+    }
 
     public static String removeShiftAtIndexFromJob(int index, String jobTitle) {
         ArrayList<Job> jobs = (ArrayList<Job>) user.getJobs();

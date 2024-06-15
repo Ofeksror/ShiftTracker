@@ -1,13 +1,11 @@
 package com.example.shifttracker;
 
 import static com.example.shifttracker.FirebaseManager.findJobByTitle;
-import static com.example.shifttracker.FirebaseManager.getUserInstance;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;

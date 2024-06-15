@@ -35,4 +35,14 @@
         app:layout_constraintStart_toStartOf="@+id/shiftsRecyclerView"
         app:layout_constraintTop_toBottomOf="@+id/shiftsRecyclerView" />
 
+    <Button
+        android:id="@+id/buttonGenerateCsv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginBottom="40dp"
+        android:text="CSV"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/createNewShift" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
