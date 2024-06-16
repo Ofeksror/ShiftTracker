@@ -1,35 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".StatusFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
-    <Button
-        android:id="@+id/start_new_shift_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start New Shift" />
-
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/barChart"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:layout_below="@+id/start_new_shift_button"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="64dp" />
+        android:layout_height="wrap_content">
 
-    <include
-        layout="@layout/goals_card"
-        android:id="@+id/cardGoals"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/barChart"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp" />
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragmentContainerGoalsCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-</RelativeLayout>
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragmentContainerIncomeBarChart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragmentContainerGoalsCard"
+            android:layout_marginTop="30dp" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragmentContainerLiveShift"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragmentContainerIncomeBarChart"
+            android:layout_marginTop="30dp" />
+
+    </RelativeLayout>
+
+</ScrollView>
