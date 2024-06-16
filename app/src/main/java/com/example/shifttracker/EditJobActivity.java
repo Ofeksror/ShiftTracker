@@ -47,6 +47,7 @@ public class EditJobActivity extends AppCompatActivity {
         inputExtraHoursAfter = (EditText) findViewById(R.id.inputExtraHoursAfter);
         inputExtraHoursRate = (EditText) findViewById(R.id.inputExtraHoursRate);
         buttonCreate = (Button) findViewById(R.id.buttonCreate);
+        buttonDeleteJob = (Button) findViewById(R.id.buttonDeleteJob);
 
         buttonDeleteJob.setVisibility(View.GONE);
 
@@ -164,6 +165,8 @@ public class EditJobActivity extends AppCompatActivity {
         if (results.length() == 0) {
             results = "Successfully Deleted Job " + originalJobTitle;
         }
+
         Toast.makeText(EditJobActivity.this, results, Toast.LENGTH_LONG).show();
+        finish();
     }
 }

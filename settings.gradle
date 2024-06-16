@@ -3,6 +3,8 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+        jcenter() // Add this if it's not present
+        maven { url 'https://jitpack.io' }
     }
 }
 dependencyResolutionManagement {
@@ -10,6 +12,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        gradlePluginPortal()
+        jcenter() // Add this if it's not present
+        maven { url 'https://jitpack.io' }
     }
 }
 rootProject.name = "Shift Tracker"

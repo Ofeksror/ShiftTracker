@@ -5,15 +5,20 @@ import static com.example.shifttracker.FirebaseManager.getInstance;
 import static com.example.shifttracker.FirebaseManager.signOut;
 import static com.example.shifttracker.FirebaseManager.syncUserWithDatabase;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -69,6 +74,23 @@ public class MainActivity extends AppCompatActivity {
             }
             return loadFragment(fragment);
         });
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            requestPermissions(new String[] {Manifest.permission.POST_NOTIFICATIONS}, 99);
+        }
+    }
+
+    public void onRequestPermissionResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 99) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("Ofek", "Permission to send notifications granted.");
+            }
+            else {
+                Log.e("Ofek", "User did not grant permission to send notifications.");
+            }
+        }
     }
 
     @Override

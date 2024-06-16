@@ -1,21 +1,21 @@
 package com.example.shifttracker;
 
-import android.app.AlertDialog;
+import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.TimePickerDialog;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,15 +28,32 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.firebase.Firebase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -61,6 +78,7 @@ public class StatusFragment extends Fragment {
     private String userId = "exampleUserId"; // Replace with the actual user ID
     private final Handler handler = new Handler(Looper.getMainLooper());
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    private BarChart barChart;
 
 
     public StatusFragment() {
@@ -83,14 +101,70 @@ public class StatusFragment extends Fragment {
         Button btnStartShift = view.findViewById(R.id.start_new_shift_button);
         btnStartShift.setOnClickListener(v -> startShift());
 
+        barChart = view.findViewById(R.id.barChart);
+        populateBarChart(FirebaseManager.calculateIncomeForLastSixMonths());
+
+        createNotificationChannel();
+
         return view;
+    }
+
+    private class CurrencyValueFormatter extends ValueFormatter {
+        @Override
+        public String getBarLabel(BarEntry barEntry) {
+            return "$" + String.format("%.0f", barEntry.getY());
+        }
+    }
+
+    private void populateBarChart(Map<String, Float> incomeData) {
+        List<BarEntry> entries = new ArrayList<>();
+        List<String> labels = new ArrayList<>();
+        int index = 0;
+
+        for (Map.Entry<String, Float> entry : incomeData.entrySet()) {
+            entries.add(new BarEntry(index, entry.getValue()));
+            labels.add(entry.getKey());
+            index++;
+        }
+
+        BarDataSet dataSet = new BarDataSet(entries, "Monthly Income");
+        dataSet.setColors(ColorTemplate.PASTEL_COLORS);
+        dataSet.setValueTextSize(14f); // Set text size of bar's height
+        dataSet.setValueFormatter(new CurrencyValueFormatter());
+
+        BarData barData = new BarData(dataSet);
+        barData.setBarWidth(0.75f); // set custom bar width
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+        xAxis.setGranularity(1f);
+        xAxis.setGranularityEnabled(true);
+        xAxis.setTextColor(Color.BLACK);
+        xAxis.setTextSize(10f);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(false);
+
+        barChart.getAxisLeft().setEnabled(false); // Hide left Y-axis
+        barChart.getAxisRight().setEnabled(false); // Hide right Y-axis
+
+        barChart.setFitBars(true); // make the x-axis fit exactly all bars
+        barChart.setData(barData);
+        barChart.getLegend().setEnabled(false); // Remove the legend
+
+        barChart.getDescription().setEnabled(false);
+        barChart.setDrawGridBackground(false); // Remove background grid
+        barChart.setDrawBorders(false); // Remove chart borders
+
+        barChart.setTouchEnabled(false);
+
+        barChart.invalidate(); // refresh
     }
 
     private void startShift() {
         startTime = new Date();
         showBottomSheetDialog();
         startTimer();
-        saveShiftState(true);
     }
 
     private void showBottomSheetDialog() {
@@ -108,8 +182,8 @@ public class StatusFragment extends Fragment {
         btnCancelLiveShift = view.findViewById(R.id.btnCancelLiveShift);
 
         tvShiftStartTime.setText("Since " + sdf.format(startTime) + " (Tap to Edit)");
-
         tvShiftStartTime.setOnClickListener(v -> setDateTimePickerDialog(tvShiftStartTime, startTime));
+//        scheduleNotifications();
 
         btnEndShift.setOnClickListener(v -> endShift());
         btnCancelLiveShift.setOnClickListener(v -> bottomSheetDialog.dismiss());
@@ -118,7 +192,6 @@ public class StatusFragment extends Fragment {
             if (timer != null) {
                 timer.cancel();
             }
-            saveShiftState(false);
         });
 
         bottomSheetDialog.show();
@@ -128,8 +201,9 @@ public class StatusFragment extends Fragment {
         if (tvRef == tvShiftStartTime) {
             tvRef.setText("Since " + sdf.format(selectedDateTime) + " (Tap to Edit)");
             startTime = selectedDateTime;
-        }
-        else if (tvRef == tvEndTime) {
+
+//            scheduleNotifications();
+        } else if (tvRef == tvEndTime) {
             tvRef.setText(sdf.format(startTime) + " to " + sdf.format(selectedDateTime) + " (Tap to Edit End Time)");
             endTime = selectedDateTime;
             updateDurationTV();
@@ -137,6 +211,11 @@ public class StatusFragment extends Fragment {
             float wage = FirebaseManager.calculateWage(startTime, endTime, (etHourlyFee.getText().toString().length() == 0) ? 0 : Float.parseFloat(etHourlyFee.getText().toString()), selectedJob.getExtraHoursAfter(), selectedJob.getExtraHoursRate(), (etBonus.getText().toString().length() == 0) ? 0 : Float.parseFloat(etBonus.getText().toString()));
             tvShiftWage.setText("Wage: $" + String.valueOf(wage));
         }
+    }
+
+    public void scheduleNotifications() {
+        long delayMillis = 60 * 60 * 1000; // 1 hour in milliseconds
+        long triggerTime = startTime.getTime() + delayMillis;
     }
 
     private void updateDurationTV() {
@@ -182,13 +261,67 @@ public class StatusFragment extends Fragment {
             public void run() {
                 handler.post(() -> {
                     long durationMillis = new Date().getTime() - startTime.getTime();
-                    long seconds = durationMillis / 1000 % 60;
-                    long minutes = durationMillis / (1000 * 60) % 60;
-                    long hours = durationMillis / (1000 * 60 * 60) % 24;
+                    int seconds = (int) (durationMillis / 1000 % 60);
+                    int minutes = (int) (durationMillis / (1000 * 60) % 60);
+                    int hours = (int) (durationMillis / (1000 * 60 * 60) % 24);
+
+                    // Send notification every whole hour
+                    if (seconds == 0 && minutes == 0 && hours > 0) {
+                        sendNotification(hours);
+                    }
+
+                    // DEMO !
+                    // Send notification every 5 seconds
+                    if (seconds % 5 == 0 && seconds > 0) {
+                        sendNotification(seconds);
+                    }
+
+                    if (minutes == 0 && seconds == 0 && hours > 0) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions((Activity) requireContext(), new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
+                            } else {
+                                sendNotification(hours);
+                            }
+                        } else {
+                            sendNotification(hours);
+                        }
+                    }
+
                     tvShiftDuration.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds));
                 });
             }
         }, 0, 1000);
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "ShiftNotificationChannel";
+            String description = "Channel for shift duration notifications";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("SHIFT_NOTIFICATION_CHANNEL", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = requireContext().getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void sendNotification(int hours) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), "SHIFT_NOTIFICATION_CHANNEL")
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("Shift Duration Alert")
+                .setContentText("It has been " + hours + " hours since your shift started.")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(requireContext());
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(requireContext(), "Permission to send notifications was not granted.", Toast.LENGTH_LONG).show();
+        }
+        else {
+            notificationManager.notify(hours, builder.build());
+        }
     }
 
     private void endShift() {
@@ -298,10 +431,5 @@ public class StatusFragment extends Fragment {
     private void updateSelectedJob(String selectedJobTitle) {
         selectedJob = FirebaseManager.findJobByTitle(selectedJobTitle);
         etHourlyFee.setText(String.valueOf(selectedJob.getHourlyFee()));
-    }
-
-    private void saveShiftState(boolean isActive) {
-        // Save the state of the shift to SharedPreferences or a database
-        // Include fields like startTime, hourlyFee, notes, jobTitle, isActive
     }
 }

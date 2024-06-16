@@ -12,9 +12,15 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import data_models.Job;
 import data_models.Shift;
@@ -308,5 +314,39 @@ public class FirebaseManager {
         });
 
         return failureMessage[0];
+    }
+
+    public static Map<String, Float> calculateIncomeForLastSixMonths() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM", Locale.getDefault());
+
+        // Go back 6 months ago
+        calendar.add(Calendar.MONTH, -5);
+
+        // Initialize map values
+        Map<String, Float> incomeData = new LinkedHashMap<>();
+        for (int i = 0; i < 6; i++) {
+            String month = sdf.format(calendar.getTime());
+            incomeData.put(month, (float) 0);
+
+            // Go forward one month
+            calendar.add(Calendar.MONTH, 1);
+        }
+
+        Log.d("Ofek", incomeData.keySet().toString());
+
+        ArrayList<Shift> shifts = new ArrayList<Shift>();
+        for (Job job : user.getJobs()) {
+            shifts.addAll(job.getShifts());
+        }
+
+        for (Shift shift : shifts) {
+            String shiftMonth = sdf.format(shift.getStartTime());
+            if (incomeData.containsKey(shiftMonth)) {
+                incomeData.put(shiftMonth, incomeData.get(shiftMonth) + shift.getWage());
+            }
+        }
+
+        return incomeData;
     }
 }

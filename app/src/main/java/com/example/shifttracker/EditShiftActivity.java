@@ -93,7 +93,7 @@ public class EditShiftActivity extends AppCompatActivity {
             inputNotes.setText(intentData.get("notes").toString());
 
             shiftIndex = Integer.parseInt(intentData.get("index").toString());
-            buttonSubmit.setText("Update Job");
+            buttonSubmit.setText("Update Shift");
         }
         else {
             editingExistingShift = false;
