@@ -11,12 +11,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -335,10 +333,7 @@ public class FirebaseManager {
 
         Log.d("Ofek", incomeData.keySet().toString());
 
-        ArrayList<Shift> shifts = new ArrayList<Shift>();
-        for (Job job : user.getJobs()) {
-            shifts.addAll(job.getShifts());
-        }
+        ArrayList<Shift> shifts = getAllShifts();
 
         for (Shift shift : shifts) {
             String shiftMonth = sdf.format(shift.getStartTime());
@@ -348,5 +343,61 @@ public class FirebaseManager {
         }
 
         return incomeData;
+    }
+
+    public static void updateGoals(int targetMonthlyIncome, int targetWeeklyHours) {
+        user.setTargetMonthlyIncome(targetMonthlyIncome);
+        user.setTargetWeeklyHours(targetWeeklyHours);
+
+        updateDatabaseUserDocument();
+    }
+
+    public static ArrayList<Shift> getAllShifts() {
+        ArrayList<Shift> shifts = new ArrayList<Shift>();
+        for (Job job : user.getJobs()) {
+            shifts.addAll(job.getShifts());
+        }
+
+        return shifts;
+    }
+
+    public static double getThisMonthIncome() {
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int currentYear = calendar.get(Calendar.YEAR);
+
+        float totalIncome = 0;
+
+        ArrayList<Shift> shifts = getAllShifts();
+        for (Shift shift : shifts) {
+            calendar.setTime(shift.getStartTime());
+
+            if (calendar.get(Calendar.MONTH) == currentMonth
+            && calendar.get(Calendar.YEAR) == currentYear) {
+                totalIncome += shift.getWage();
+            }
+        }
+
+        return totalIncome;
+    }
+
+    public static double getThisWeekWorkingHours() {
+        Calendar calendar = Calendar.getInstance();
+        int currentWeek = calendar.get(Calendar.WEEK_OF_YEAR);
+        int currentYear = calendar.get(Calendar.YEAR);
+
+        float totalHours = 0;
+
+        ArrayList<Shift> shifts = getAllShifts();
+        for (Shift shift : shifts) {
+            calendar.setTime(shift.getStartTime());
+
+            if (calendar.get(Calendar.WEEK_OF_YEAR) == currentWeek
+                    && calendar.get(Calendar.YEAR) == currentYear) {
+                totalHours += getShiftDuration(shift.getStartTime(), shift.getEndTime());
+            }
+        }
+
+        return totalHours;
     }
 }

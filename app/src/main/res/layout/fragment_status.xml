@@ -20,4 +20,16 @@
         android:layout_below="@+id/start_new_shift_button"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="64dp" />
+
+    <include
+        layout="@layout/goals_card"
+        android:id="@+id/cardGoals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/barChart"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp" />
+
 </RelativeLayout>

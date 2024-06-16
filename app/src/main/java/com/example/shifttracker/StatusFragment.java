@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +46,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.Firebase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
@@ -80,6 +82,10 @@ public class StatusFragment extends Fragment {
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
     private BarChart barChart;
 
+    View cardGoals;
+    ProgressBar progressMonthlyIncome, progressWeeklyHours;
+    TextView tvIncomeProgress, tvHoursProgress;
+
 
     public StatusFragment() {
         super(R.layout.fragment_status);
@@ -98,15 +104,44 @@ public class StatusFragment extends Fragment {
         userId = FirebaseManager.getUserId();
         db = FirebaseManager.getFirestoreInstance();
 
+        // Live Shift
         Button btnStartShift = view.findViewById(R.id.start_new_shift_button);
         btnStartShift.setOnClickListener(v -> startShift());
 
+        createNotificationChannel();
+
+        // Bar Chart
         barChart = view.findViewById(R.id.barChart);
         populateBarChart(FirebaseManager.calculateIncomeForLastSixMonths());
 
-        createNotificationChannel();
+        // Goals Card
+        cardGoals = view.findViewById(R.id.cardGoals);
+        progressMonthlyIncome = cardGoals.findViewById(R.id.progressMonthlyIncome);
+        progressWeeklyHours = cardGoals.findViewById(R.id.progressWeeklyHours);
+        tvIncomeProgress = cardGoals.findViewById(R.id.tvIncomeProgress);
+        tvHoursProgress = cardGoals.findViewById(R.id.tvHoursProgress);
+
+        updateGoalsProgress();
 
         return view;
+    }
+
+    private void updateGoalsProgress() {
+        // Set goals as max values for progress bars
+        progressMonthlyIncome.setMax(FirebaseManager.getUserInstance().getTargetMonthlyIncome());
+        progressWeeklyHours.setMax(FirebaseManager.getUserInstance().getTargetWeeklyHours());
+
+        // Get total income of this month
+        int thisMonthIncome = (int) Math.floor(FirebaseManager.getThisMonthIncome());
+        progressMonthlyIncome.setProgress(thisMonthIncome);
+
+        tvIncomeProgress.setText(thisMonthIncome + "/" + progressMonthlyIncome.getMax());
+
+        // Get total hours worked this week
+        int thisWeekWorkingHours = (int) Math.floor(FirebaseManager.getThisWeekWorkingHours());
+        progressWeeklyHours.setProgress(thisWeekWorkingHours);
+
+        tvHoursProgress.setText(thisWeekWorkingHours + "/" + progressWeeklyHours.getMax());
     }
 
     private class CurrencyValueFormatter extends ValueFormatter {
@@ -140,7 +175,7 @@ public class StatusFragment extends Fragment {
         xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
         xAxis.setGranularity(1f);
         xAxis.setGranularityEnabled(true);
-        xAxis.setTextColor(Color.BLACK);
+//        xAxis.setTextColor(Color.BLACK);
         xAxis.setTextSize(10f);
         xAxis.setDrawAxisLine(false);
         xAxis.setDrawGridLines(false);
