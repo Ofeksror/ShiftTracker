@@ -35,6 +35,9 @@
             android:name=".EditShiftActivity"
             android:exported="false" />
         <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

@@ -1,5 +1,6 @@
 package com.example.shifttracker;
 
+import static android.app.Activity.RESULT_OK;
 import static com.example.shifttracker.FirebaseManager.getAuthInstance;
 import static com.example.shifttracker.FirebaseManager.getUserInstance;
 import static com.example.shifttracker.FirebaseManager.signOut;
@@ -32,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +49,8 @@ public class SettingsFragment extends Fragment {
     private ActivityResultLauncher<String> selectImageLauncher;
     private ActivityResultLauncher<Intent> takePhotoLauncher;
 
+    private ActivityResultLauncher<Intent> cropImageLauncher;
+
     public SettingsFragment() {
         super(R.layout.fragment_settings);
     }
@@ -60,7 +64,7 @@ public class SettingsFragment extends Fragment {
                 new ActivityResultContracts.GetContent(),
                 result -> {
                     if (result != null) {
-                        pfpImageView.setImageURI(result);
+                        startCrop(result);
                     }
                 }
         );
@@ -69,8 +73,24 @@ public class SettingsFragment extends Fragment {
         takePhotoLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        pfpImageView.setImageURI(imageUri);
+                    Log.d("Ofek", String.valueOf(result.getResultCode()));
+                    if (result.getResultCode() == RESULT_OK) {
+                        startCrop(imageUri);
+                    }
+                }
+        );
+
+        cropImageLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Uri croppedImageUri = UCrop.getOutput(result.getData());
+                        if (croppedImageUri != null) {
+                            pfpImageView.setImageURI(null); // Reset the URI to force the refresh
+                            pfpImageView.setImageURI(croppedImageUri);
+                            imageUri = croppedImageUri; // Update imageUri to the new cropped image URI
+//                        saveImageToFirestore(croppedImageUri);
+                        }
                     }
                 }
         );
@@ -216,5 +236,15 @@ public class SettingsFragment extends Fragment {
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
+    }
+
+    private void startCrop(@NonNull Uri uri) {
+        String destinationFileName = "cropped";
+        destinationFileName += ".jpg";
+
+        UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(requireContext().getCacheDir(), destinationFileName)));
+        uCrop.withAspectRatio(1, 1);
+        uCrop.withMaxResultSize(450, 450);
+        cropImageLauncher.launch(uCrop.getIntent(requireContext()));
     }
 }
