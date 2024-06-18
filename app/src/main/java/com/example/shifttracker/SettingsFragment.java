@@ -46,14 +46,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SettingsFragment extends Fragment {
-    public String TAG = "MAIN ACTIVITY";
+    public String TAG = "OFEK";
     private Button signOutButton, changePfpButton, buttonUpdateGoals;
     private ImageView pfpImageView;
     private Uri imageUri;
 
     private ActivityResultLauncher<String> selectImageLauncher;
     private ActivityResultLauncher<Intent> takePhotoLauncher;
-
     private ActivityResultLauncher<Intent> cropImageLauncher;
 
     public SettingsFragment() {
@@ -63,6 +62,8 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(TAG, "onCreate: SettingsFragment created");
 
         // Initialize the activity result launcher for selecting an image from the gallery
         selectImageLauncher = registerForActivityResult(
@@ -87,17 +88,36 @@ public class SettingsFragment extends Fragment {
         cropImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+                    Log.d(TAG, "cropImageLauncher: onActivityResult called");
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Uri croppedImageUri = UCrop.getOutput(result.getData());
                         if (croppedImageUri != null) {
+                            Log.d(TAG, "cropImageLauncher: Cropped image URI: " + croppedImageUri.toString());
                             imageUri = croppedImageUri; // Update imageUri to the new cropped image URI
                             pfpImageView.setImageURI(null);
                             pfpImageView.setImageURI(imageUri);
                             updateUserProfilePicture(croppedImageUri); // Save to Firebase Storage and update Firestore
+                        } else {
+                            Log.e(TAG, "cropImageLauncher: Cropped image URI is null");
                         }
+                    } else {
+                        Log.e(TAG, "cropImageLauncher: Result not OK or data is null");
                     }
                 }
         );
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: SettingsFragment resumed");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: SettingsFragment paused");
     }
 
     @Nullable
@@ -105,6 +125,8 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        Log.d(TAG, "onCreateView: SettingsFragment view created");
 
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         signOutButton = (Button) view.findViewById(R.id.signOutButton);
@@ -272,14 +294,23 @@ public class SettingsFragment extends Fragment {
     }
 
     private void startCrop(@NonNull Uri uri) {
+        Log.d(TAG, "startCrop: Starting UCrop with URI: " + uri.toString());
         String destinationFileName = "cropped";
         destinationFileName += ".jpg";
 
         UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(requireContext().getCacheDir(), destinationFileName)));
         uCrop.withAspectRatio(1, 1);
         uCrop.withMaxResultSize(450, 450);
-        cropImageLauncher.launch(uCrop.getIntent(requireContext()));
+        Intent intent = uCrop.getIntent(requireContext());
+
+        if (intent.resolveActivity(requireContext().getPackageManager()) != null) {
+            Log.d(TAG, "startCrop: UCrop Intent is valid, launching cropImageLauncher");
+            cropImageLauncher.launch(intent);
+        } else {
+            Log.e(TAG, "startCrop: UCrop Intent could not be resolved");
+        }
     }
+
 
     private void updateUserProfilePicture(Uri uri) {
         String userId = getUserId(); // Get the current user's unique ID

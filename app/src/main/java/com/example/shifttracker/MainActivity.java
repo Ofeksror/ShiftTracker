@@ -89,18 +89,22 @@ public class MainActivity extends AppCompatActivity implements SyncCallback {
     }
 
     private Fragment getFragmentByTag(String tag) {
-        Fragment fragment = new StatusFragment();
+        Fragment fragment;
         switch (tag) {
             case "SettingsFragment":
                 fragment = new SettingsFragment();
+                break;
             case "JobsFragment":
                 fragment = new JobsFragment();
+                break;
             case "ShiftsFragment":
                 fragment = new ShiftsFragment();
+                break;
             case "StatusFragment":
+            default:
                 fragment = new StatusFragment();
+                break;
         }
-
         return fragment;
     }
 
@@ -112,14 +116,17 @@ public class MainActivity extends AppCompatActivity implements SyncCallback {
         switch (tag) {
             case "SettingsFragment":
                 bottomNavigationView.setSelectedItemId(R.id.settingsNavigationItem);
+                break;
             case "JobsFragment":
                 bottomNavigationView.setSelectedItemId(R.id.jobsNavigationItem);
+                break;
             case "ShiftsFragment":
                 bottomNavigationView.setSelectedItemId(R.id.shiftsNavigationItem);
+                break;
             case "StatusFragment":
-                bottomNavigationView.setSelectedItemId(R.id.statusNavigationItem);
             default:
-                return;
+                bottomNavigationView.setSelectedItemId(R.id.statusNavigationItem);
+                break;
         }
     }
 
@@ -135,6 +142,8 @@ public class MainActivity extends AppCompatActivity implements SyncCallback {
         return sharedPreferences.getString("currentFragment", "StatusFragment");
     }
 
+
+    /*
     private boolean loadFragment(Fragment fragment, String tag) {
         if (fragment == null || getUserInstance() == null) {
             Log.d("Ofek", "Fragment is null: " + (fragment == null));
@@ -150,6 +159,31 @@ public class MainActivity extends AppCompatActivity implements SyncCallback {
         saveCurrentFragment(tag);
         return true;
     }
+    */
+
+    private boolean loadFragment(Fragment fragment, String tag) {
+        if (fragment == null || getUserInstance() == null) {
+            Log.d("Ofek", "Fragment is null: " + (fragment == null));
+            Log.d("Ofek", "User is null: " + (getUserInstance() == null));
+            return false;
+        }
+
+        Fragment existingFragment = getSupportFragmentManager().findFragmentByTag(tag);
+        if (existingFragment != null && existingFragment.isVisible()) {
+            Log.d("Ofek", "Fragment already visible: " + tag);
+            return false;
+        }
+
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.fragmentContainer, fragment, tag)
+                .addToBackStack(null)  // Add to back stack to prevent recreation
+                .commit();
+
+        saveCurrentFragment(tag);
+        return true;
+    }
+
 
     public void onRequestPermissionResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -173,31 +207,17 @@ public class MainActivity extends AppCompatActivity implements SyncCallback {
     protected void onResume() {
         super.onResume();
         String currentFragmentTag = getCurrentFragment();
-        Log.d("Ofek", currentFragmentTag);
-        Fragment fragment;
-        switch (currentFragmentTag) {
-            case "SettingsFragment":
-                fragment = new SettingsFragment();
-                bottomNavigationView.setSelectedItemId(R.id.settingsNavigationItem);
-                break;
-            case "JobsFragment":
-                fragment = new JobsFragment();
-                bottomNavigationView.setSelectedItemId(R.id.jobsNavigationItem);
-                break;
-            case "ShiftsFragment":
-                fragment = new ShiftsFragment();
-                bottomNavigationView.setSelectedItemId(R.id.shiftsNavigationItem);
-                break;
-            case "StatusFragment":
-                fragment = new StatusFragment();
-                bottomNavigationView.setSelectedItemId(R.id.statusNavigationItem);
-                break;
-            default:
-                fragment = new StatusFragment();
-                bottomNavigationView.setSelectedItemId(R.id.statusNavigationItem);
-                break;
+        Log.d("Ofek", "onResume: Current fragment tag: " + currentFragmentTag);
+        Fragment currentFragment = getSupportFragmentManager().findFragmentByTag(currentFragmentTag);
+
+        if (currentFragment == null) {
+            Log.d("Ofek", "onResume: Current fragment is null, creating new fragment");
+            Fragment fragment = getFragmentByTag(currentFragmentTag);
+            loadFragment(fragment, currentFragmentTag);
+        } else {
+            Log.d("Ofek", "onResume: Current fragment exists, no need to create a new one");
+            setBottomNavigationSelectedItem(currentFragmentTag);
         }
-        loadFragment(fragment, currentFragmentTag);
     }
 
     @Override

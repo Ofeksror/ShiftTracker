@@ -39,7 +39,6 @@
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity"
             />
         <activity
             android:name=".MainActivity"
