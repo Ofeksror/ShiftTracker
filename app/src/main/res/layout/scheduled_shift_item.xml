@@ -2,9 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center"
     android:orientation="horizontal"
-    android:padding="16dp"
-    android:background="?attr/selectableItemBackground">
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="12dp">
 
     <TextView
         android:id="@+id/textViewDate"
@@ -18,8 +20,8 @@
         android:id="@+id/deleteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_menu_delete"
+        android:layout_marginStart="8dp"
+        android:background="@android:color/transparent"
         android:contentDescription="Delete"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_marginStart="8dp" />
+        android:src="@android:drawable/ic_menu_close_clear_cancel" />
 </LinearLayout>

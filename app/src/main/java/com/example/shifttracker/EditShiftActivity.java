@@ -54,6 +54,7 @@ public class EditShiftActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_shift);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Edit Shift");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

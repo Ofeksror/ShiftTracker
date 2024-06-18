@@ -10,11 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.Firebase;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import data_models.Shift;
 
@@ -50,7 +47,7 @@ public class ShiftsListAdapter extends RecyclerView.Adapter<ShiftsListAdapter.My
             tv_date = view.findViewById(R.id.dateTV);
             tv_hours = view.findViewById(R.id.hoursTV);
             tv_wage = view.findViewById(R.id.wageTV);
-            btn_edit = view.findViewById(R.id.btn_editShift);
+            btn_edit = view.findViewById(R.id.btn_editJob);
         }
     }
 

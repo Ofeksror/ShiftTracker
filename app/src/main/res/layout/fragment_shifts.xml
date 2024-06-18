@@ -6,21 +6,54 @@
     android:layout_height="match_parent"
     tools:context=".ShiftsFragment">
 
-    <Spinner
-        android:id="@+id/jobsSpinner"
-        android:layout_width="213dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+    <TextView
+        android:id="@+id/chooseAJobTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="Choose a job..."
+        android:textSize="12dp"
+        app:layout_constraintStart_toStartOf="@+id/shiftsDescriptionTV"
+        app:layout_constraintTop_toBottomOf="@+id/shiftsDescriptionTV" />
+
+    <TextView
+        android:id="@+id/shiftsDescriptionTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="View your shift log history for all of your jobs"
+        android:textSize="14dp"
+        app:layout_constraintStart_toStartOf="@+id/shiftsTV"
+        app:layout_constraintTop_toBottomOf="@+id/shiftsTV" />
+
+    <TextView
+        android:id="@+id/shiftsTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="40dp"
+        android:text="Your Shifts"
+        android:textSize="28dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Spinner
+        android:id="@+id/jobsSpinner"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toStartOf="@+id/buttonGenerateCsv"
+        app:layout_constraintStart_toStartOf="@+id/chooseAJobTV"
+        app:layout_constraintTop_toBottomOf="@+id/chooseAJobTV" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/shiftsRecyclerView"
-        android:layout_width="373dp"
-        android:layout_height="511dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/jobsSpinner" />
@@ -29,20 +62,22 @@
         android:id="@+id/createNewShift"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginBottom="40dp"
         android:text="Create New Shift"
-        app:layout_constraintEnd_toEndOf="@+id/shiftsRecyclerView"
-        app:layout_constraintStart_toStartOf="@+id/shiftsRecyclerView"
-        app:layout_constraintTop_toBottomOf="@+id/shiftsRecyclerView" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/buttonGenerateCsv"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginBottom="40dp"
-        android:text="CSV"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/createNewShift" />
+        android:layout_height="48dp"
+        android:layout_marginEnd="30dp"
+        android:paddingHorizontal="22dp"
+        android:text="Export as CSV"
+        android:textSize="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/jobsSpinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/jobsSpinner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

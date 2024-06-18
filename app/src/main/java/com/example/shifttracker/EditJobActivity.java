@@ -37,6 +37,7 @@ public class EditJobActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_job);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Edit Job");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

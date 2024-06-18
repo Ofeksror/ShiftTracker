@@ -33,13 +33,14 @@ public class JobsListAdapter extends RecyclerView.Adapter<JobsListAdapter.MyView
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv_jobTitle;
+        private TextView tv_jobTitle, tv_hourlyFee;
         private Button btn_editJob;
 
         public MyViewHolder(final View view) {
             super(view);
 
             tv_jobTitle = view.findViewById(R.id.dateTV);
+            tv_hourlyFee = view.findViewById(R.id.hourlyFeeTv);
             btn_editJob = view.findViewById(R.id.btn_editJob);
         }
     }
@@ -55,6 +56,7 @@ public class JobsListAdapter extends RecyclerView.Adapter<JobsListAdapter.MyView
     public void onBindViewHolder(@NonNull JobsListAdapter.MyViewHolder holder, int position) {
         Job currentJob = jobsDataSet.get(position);
         holder.tv_jobTitle.setText(currentJob.getTitle());
+        holder.tv_hourlyFee.setText("$" + String.valueOf(currentJob.getHourlyFee()) + "/hour");
 
         holder.btn_editJob.setOnClickListener(new View.OnClickListener() {
             @Override

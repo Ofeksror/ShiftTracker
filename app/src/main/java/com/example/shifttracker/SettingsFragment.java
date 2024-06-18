@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,6 +48,7 @@ import java.util.Date;
 
 public class SettingsFragment extends Fragment {
     public String TAG = "OFEK";
+    private TextView emailTV;
     private Button signOutButton, changePfpButton, buttonUpdateGoals;
     private ImageView pfpImageView;
     private Uri imageUri;
@@ -129,6 +131,10 @@ public class SettingsFragment extends Fragment {
         Log.d(TAG, "onCreateView: SettingsFragment view created");
 
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        emailTV = (TextView) view.findViewById(R.id.emailTV);
+        emailTV.setText("Logged in as " + FirebaseManager.getAuthInstance().getCurrentUser().getEmail());
+
         signOutButton = (Button) view.findViewById(R.id.signOutButton);
 
          signOutButton.setOnClickListener(new View.OnClickListener() {

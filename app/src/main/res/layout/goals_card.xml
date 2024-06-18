@@ -15,34 +15,33 @@
         android:layout_height="wrap_content"
         android:text="Monthly Income Goal Progress"
         android:textSize="18sp"
-        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
+        style="@style/CustomProgressBarHorizontal"
         android:id="@+id/progressMonthlyIncome"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="316dp"
+        android:layout_width="285dp"
         android:layout_height="26dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="24dp"
         android:max="100"
         android:progress="0"
-        app:layout_constraintEnd_toStartOf="@+id/tvIncomeProgress"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitleMonthlyIncomeGoal" />
 
     <TextView
         android:id="@+id/tvIncomeProgress"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingBottom="4dp"
-        android:text="0/0"
-        android:textSize="16sp"
+        android:layout_marginStart="12dp"
+        android:gravity="center_vertical"
+        android:text="99999/99999"
+        android:textAlignment="textEnd"
+        android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="@+id/progressMonthlyIncome"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/progressMonthlyIncome"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toEndOf="@+id/progressMonthlyIncome"
+        app:layout_constraintTop_toTopOf="@+id/progressMonthlyIncome" />
 
     <!-- -->
 
@@ -53,33 +52,32 @@
         android:layout_marginTop="36dp"
         android:text="Weekly Working Hours Goal Progress"
         android:textSize="18sp"
-        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressMonthlyIncome" />
 
     <ProgressBar
         android:id="@+id/progressWeeklyHours"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="316dp"
+        style="@style/CustomProgressBarHorizontal"
+        android:layout_width="285dp"
         android:layout_height="26dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="24dp"
         android:max="100"
         android:progress="0"
-        app:layout_constraintEnd_toStartOf="@+id/tvHoursProgress"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitleWeeklyHoursGoal" />
 
     <TextView
         android:id="@+id/tvHoursProgress"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingBottom="4dp"
-        android:text="0/0"
-        android:textSize="16sp"
+        android:layout_marginStart="12dp"
+        android:gravity="center_vertical"
+        android:text="9999/9999"
+        android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="@+id/progressWeeklyHours"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/progressWeeklyHours"
         app:layout_constraintTop_toTopOf="@+id/progressWeeklyHours"
-        app:layout_constraintVertical_bias="0.0" />
+        tools:textAlignment="textEnd" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="24dp">
 
     <TextView
         android:text="Target Monthly Income"
@@ -16,29 +16,29 @@
         android:id="@+id/etTargetMonthlyIncome"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:hint="Target Monthly Income" />
+        android:hint="Monthly Income" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Target Weekly Working Hours"
         android:textSize="14dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         />
 
     <EditText
         android:id="@+id/etTargetWeeklyHours"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:hint="Target Weekly Working Hours"
-        android:layout_marginTop="8dp" />
+        android:hint="Working Hours"
+        android:layout_marginTop="0dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="16dp"
-        android:gravity="end">
+        android:layout_marginTop="24dp"
+        android:gravity="end"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/cancelButton"
@@ -50,7 +50,7 @@
             android:id="@+id/updateButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Update Goals"
-            android:layout_marginStart="16dp" />
+            android:layout_marginStart="16dp"
+            android:text="Update Goals" />
     </LinearLayout>
 </LinearLayout>

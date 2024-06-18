@@ -2,4 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="colorPrimary">#53C615</color>
+    <color name="colorSubtleText">#909090</color>
+
+    <color name="progress_bar_color">#62CD28</color>
+    <color name="progress_bar_background_color">#383838</color>
 </resources>

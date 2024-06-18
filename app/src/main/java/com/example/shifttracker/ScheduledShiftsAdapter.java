@@ -17,6 +17,7 @@ public class ScheduledShiftsAdapter extends RecyclerView.Adapter<ScheduledShifts
 
     private List<Date> scheduledDates = new ArrayList<>();
     private OnShiftListener onShiftListener;
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM HH:mm", Locale.getDefault());
 
     public interface OnShiftListener {
         void onDeleteShift(int position);
@@ -41,7 +42,6 @@ public class ScheduledShiftsAdapter extends RecyclerView.Adapter<ScheduledShifts
     @Override
     public void onBindViewHolder(@NonNull ShiftViewHolder holder, int position) {
         Date scheduledDate = scheduledDates.get(position);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
         holder.textViewDate.setText(sdf.format(scheduledDate));
 
         holder.deleteButton.setOnClickListener(v -> onShiftListener.onDeleteShift(position));

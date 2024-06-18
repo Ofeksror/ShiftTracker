@@ -62,7 +62,7 @@ public class IncomeBarChartFragment extends Fragment {
         }
 
         BarDataSet dataSet = new BarDataSet(entries, "Monthly Income");
-        dataSet.setColors(ColorTemplate.PASTEL_COLORS);
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         dataSet.setValueTextSize(14f); // Set text size of bar's height
         dataSet.setValueFormatter(new CurrencyValueFormatter());
 
