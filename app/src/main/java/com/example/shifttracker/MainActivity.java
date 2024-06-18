@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (Build.VERSION.SDK_INT >= 33) {
-            requestPermissions(new String[] {Manifest.permission.POST_NOTIFICATIONS}, 99);
+            requestPermissions(new String[] {Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.CAMERA}, 99);
         }
     }
 
