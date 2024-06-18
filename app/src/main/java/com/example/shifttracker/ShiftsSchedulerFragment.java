@@ -105,9 +105,9 @@ public class ShiftsSchedulerFragment extends Fragment implements ScheduledShifts
     }
 
     private void cancelNotifications(Date scheduledDate) {
-        cancelNotification(scheduledDate, -2 * 60 * 60 * 1000);
-        cancelNotification(scheduledDate, -45 * 60 * 1000);
-        cancelNotification(scheduledDate, 0);
+        cancelNotification(scheduledDate, -2 * 60 * 60 * 1000, 2);
+        cancelNotification(scheduledDate, -45 * 60 * 1000, 45);
+        cancelNotification(scheduledDate, 0, 0);
     }
 
     private void scheduleNotification(Date shiftDate, long millisBeforeShift, int requestCodeSuffix) {
@@ -131,15 +131,15 @@ public class ShiftsSchedulerFragment extends Fragment implements ScheduledShifts
         }
     }
 
-    private void cancelNotification(Date shiftDate, long millisBeforeShift) {
+    private void cancelNotification(Date shiftDate, long millisBeforeShift, int requestCodeSuffix) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(shiftDate.getTime() + millisBeforeShift);
 
         Intent intent = new Intent(requireContext(), NotificationReceiver.class);
-        intent.putExtra("shiftTime", shiftDate);
-        intent.putExtra("millisBeforeShift", millisBeforeShift);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), (int) shiftDate.getTime(), intent, PendingIntent.FLAG_IMMUTABLE);
+        int requestCode = (int) (shiftDate.getTime() / 1000 + requestCodeSuffix); // Unique request code for each notification
 
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), requestCode, intent, PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
     }
 
