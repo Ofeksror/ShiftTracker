@@ -87,6 +87,7 @@ public class StatusFragment extends Fragment {
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContainerGoalsCard, new GoalsCardFragment())
                     .replace(R.id.fragmentContainerIncomeBarChart, new IncomeBarChartFragment())
+                    .replace(R.id.fragmentContainerScheduledShifts, new ShiftsSchedulerFragment())
                     .replace(R.id.fragmentContainerLiveShift, new LiveShiftFragment())
                     .commit();
         }

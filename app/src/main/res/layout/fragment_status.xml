@@ -22,10 +22,17 @@
             android:layout_marginTop="30dp" />
 
         <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragmentContainerLiveShift"
+            android:id="@+id/fragmentContainerScheduledShifts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/fragmentContainerIncomeBarChart"
+            android:layout_marginTop="30dp" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragmentContainerLiveShift"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragmentContainerScheduledShifts"
             android:layout_marginTop="30dp" />
 
     </RelativeLayout>

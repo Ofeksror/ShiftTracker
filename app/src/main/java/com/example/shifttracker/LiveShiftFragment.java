@@ -345,7 +345,6 @@ public class LiveShiftFragment extends Fragment {
         dateTimeRef = dateTimeObject[0];
     }
 
-
     private void updateSelectedJob(String selectedJobTitle) {
         selectedJob = FirebaseManager.findJobByTitle(selectedJobTitle);
         etHourlyFee.setText(String.valueOf(selectedJob.getHourlyFee()));
