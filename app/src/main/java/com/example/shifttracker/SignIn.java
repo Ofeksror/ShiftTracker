@@ -52,7 +52,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
         this.signInButton.setOnClickListener(this);
         this.signUpButton.setOnClickListener(this);
-        this.signInGoogleButton.setOnClickListener(this);
     }
 
     @Override

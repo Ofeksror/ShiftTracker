@@ -165,6 +165,7 @@ public class ShiftsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         // Get updated shifts array from job
+        if (jobSpinner.getCount() == 0) return;
         adapter.updateDataset((ArrayList<Shift>) FirebaseManager.findJobByTitle(jobSpinner.getSelectedItem().toString()).getShifts());
     }
 
