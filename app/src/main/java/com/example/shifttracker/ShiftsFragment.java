@@ -72,6 +72,8 @@ public class ShiftsFragment extends Fragment {
         createNewShift = (Button) view.findViewById(R.id.createNewShift);
         buttonGenerateCsv = (Button) view.findViewById(R.id.buttonGenerateCsv);
 
+        buttonGenerateCsv.setVisibility(View.GONE);
+
         buttonGenerateCsv.setOnClickListener(v -> {
             Job selectedJob = FirebaseManager.findJobByTitle(selectedJobTitle);
             File generatedCsvFile = generateCsvFile((ArrayList<Shift>) selectedJob.getShifts(), selectedJob.getExtraHoursAfter(), selectedJob.getExtraHoursRate());
@@ -235,10 +237,12 @@ public class ShiftsFragment extends Fragment {
 
                 if (shifts == null || shifts.isEmpty()) {
                     shiftsRecyclerView.setVisibility(View.GONE);
+                    buttonGenerateCsv.setVisibility(View.GONE);
                 }
                 else {
                     adapter.updateDataset(shifts);
                     shiftsRecyclerView.setVisibility(View.VISIBLE);
+                    buttonGenerateCsv.setVisibility(View.VISIBLE);
                 }
 
             }

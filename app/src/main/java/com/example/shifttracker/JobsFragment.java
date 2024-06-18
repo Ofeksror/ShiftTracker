@@ -16,6 +16,7 @@ import android.widget.Button;
 import java.util.ArrayList;
 
 import data_models.Job;
+import data_models.Shift;
 
 
 public class JobsFragment extends Fragment {
@@ -31,6 +32,12 @@ public class JobsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        jobsListAdapter.updateJobsList((ArrayList<Job>) FirebaseManager.getUserInstance().getJobs());
     }
 
     @Override

@@ -82,12 +82,17 @@ public class FirebaseManager {
         }
     }
 
-    public static void syncUserWithDatabase() {
+    public static void syncUserWithDatabase(SyncCallback callback) {
         // Parse user document User object
         getUserRef().get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                setUserInstance(documentSnapshot.toObject(User.class));
+                User userSnapshot = documentSnapshot.toObject(User.class);
+                setUserInstance(userSnapshot);
+
+                if (callback != null) {
+                    callback.onSyncComplete();
+                }
             }
         });
     }

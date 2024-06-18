@@ -33,10 +33,14 @@
             android:exported="false" />
         <activity
             android:name=".EditShiftActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -65,7 +69,3 @@
     </application>
 
 </manifest>
-
-<!-- android:theme="@style/Theme.ShiftTracker"-->
-<!--    android:theme="@style/Theme.AppCompat.Light.NoActionBar"-->
-
