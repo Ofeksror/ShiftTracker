@@ -2,6 +2,7 @@ package com.example.shifttracker;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.shifttracker.FirebaseManager.getAuthInstance;
+import static com.example.shifttracker.FirebaseManager.getUserId;
 import static com.example.shifttracker.FirebaseManager.getUserInstance;
 import static com.example.shifttracker.FirebaseManager.signOut;
 
@@ -9,6 +10,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,6 +36,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -73,7 +78,6 @@ public class SettingsFragment extends Fragment {
         takePhotoLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    Log.d("Ofek", String.valueOf(result.getResultCode()));
                     if (result.getResultCode() == RESULT_OK) {
                         startCrop(imageUri);
                     }
@@ -86,10 +90,10 @@ public class SettingsFragment extends Fragment {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Uri croppedImageUri = UCrop.getOutput(result.getData());
                         if (croppedImageUri != null) {
-                            pfpImageView.setImageURI(null); // Reset the URI to force the refresh
-                            pfpImageView.setImageURI(croppedImageUri);
                             imageUri = croppedImageUri; // Update imageUri to the new cropped image URI
-//                        saveImageToFirestore(croppedImageUri);
+                            pfpImageView.setImageURI(null);
+                            pfpImageView.setImageURI(imageUri);
+                            updateUserProfilePicture(croppedImageUri); // Save to Firebase Storage and update Firestore
                         }
                     }
                 }
@@ -116,11 +120,40 @@ public class SettingsFragment extends Fragment {
          pfpImageView = (ImageView) view.findViewById(R.id.imageViewPFP);
          changePfpButton.setOnClickListener(v -> showImagePickerOptions());
 
+         updateProfileImage();
+
          buttonUpdateGoals = (Button) view.findViewById(R.id.buttonUpdateGoals);
          buttonUpdateGoals.setOnClickListener(v -> {showUpdateGoalsDialog();});
 
         return view;
     }
+
+    private void updateProfileImage() {
+        String userId = getUserId(); // Get the current user's unique ID
+        FirebaseManager.getFirestoreInstance().collection("users").document(userId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String profilePicUrl = documentSnapshot.getString("profilePicUrl");
+                        if (profilePicUrl != null && !profilePicUrl.isEmpty()) {
+                            Uri profilePicUri = Uri.parse(profilePicUrl);
+                            // Fetch the image from the URL and set it to the ImageView
+                            new Thread(() -> {
+                                try {
+                                    Bitmap bitmap = BitmapFactory.decodeStream(new java.net.URL(profilePicUrl).openStream());
+                                    requireActivity().runOnUiThread(() -> {
+                                        imageUri = profilePicUri;
+                                        pfpImageView.setImageBitmap(bitmap);
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }).start();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to load profile picture.", Toast.LENGTH_SHORT).show());
+    }
+
 
     private void showUpdateGoalsDialog() {
         LayoutInflater inflater = getLayoutInflater();
@@ -246,5 +279,23 @@ public class SettingsFragment extends Fragment {
         uCrop.withAspectRatio(1, 1);
         uCrop.withMaxResultSize(450, 450);
         cropImageLauncher.launch(uCrop.getIntent(requireContext()));
+    }
+
+    private void updateUserProfilePicture(Uri uri) {
+        String userId = getUserId(); // Get the current user's unique ID
+        FirebaseStorage storage = FirebaseManager.getStorageInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageReference profilePicRef = storageRef.child("profilePictures/" + userId + ".jpg");
+
+        profilePicRef.putFile(uri)
+                .addOnSuccessListener(taskSnapshot -> profilePicRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
+                    FirebaseManager.getFirestoreInstance().collection("users").document(userId)
+                            .update("profilePicUrl", downloadUri.toString())
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(requireContext(), "Profile picture updated successfully.", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to update profile picture in Firestore.", Toast.LENGTH_SHORT).show());
+                }))
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to upload profile picture.", Toast.LENGTH_SHORT).show());
     }
 }

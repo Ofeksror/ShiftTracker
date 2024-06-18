@@ -2,6 +2,7 @@ package com.example.shifttracker;
 
 import static com.example.shifttracker.JobsFragment.jobsListAdapter;
 
+import android.net.Uri;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -10,6 +11,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,11 +32,13 @@ public class FirebaseManager {
     private String TAG = "Ofek : FirebaseManager";
 
     private static FirebaseFirestore db;
+    private static FirebaseStorage storage;
     private static FirebaseAuth auth;
     private static User user;
 
     private FirebaseManager() {
         db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
         auth = FirebaseAuth.getInstance();
         user = null;
     }
@@ -48,6 +53,7 @@ public class FirebaseManager {
     public static synchronized FirebaseFirestore getFirestoreInstance() {
         return db;
     }
+    public static synchronized FirebaseStorage getStorageInstance() { return storage; }
     public static synchronized FirebaseAuth getAuthInstance() {
         return auth;
     }
@@ -400,4 +406,7 @@ public class FirebaseManager {
 
         return totalHours;
     }
+
+
+
 }
