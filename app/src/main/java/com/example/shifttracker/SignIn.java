@@ -69,15 +69,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    public boolean validateCredentials(String email, String password) {
-        return true;
-    }
-
     public void signInCredentials(String email, String password) {
-        if (!validateCredentials(email, password)) {
-            return;
-        }
-
         getAuthInstance().signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -98,10 +90,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
     }
 
     public void createAccount(String email, String password) {
-        if (!validateCredentials(email, password)) {
-            return;
-        }
-
         getAuthInstance().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -146,16 +134,11 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        if (view == signInGoogleButton) {
-            // TODO
-            return;
-        }
-
         String email = inputEmail.getText().toString();
         String password = inputPassword.getText().toString();
 
-        if (!validateCredentials(email, password)) {
-            Toast.makeText(SignIn.this, "Invalid credentials, Please try again.", Toast.LENGTH_SHORT).show();
+        if (email.length() == 0 || password.length() == 0) {
+            Toast.makeText(SignIn.this, "Please fill all fields", Toast.LENGTH_LONG).show();
             return;
         }
 
